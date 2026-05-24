@@ -434,8 +434,22 @@ homeScene.create = function() {
     const keyA = this.input.keyboard.addKey('A');
     const keyD = this.input.keyboard.addKey('D');
     const keyF = this.input.keyboard.addKey('F');
+    const keyE = this.input.keyboard.addKey('E');
 
     keyF.on('down', function() {
+        if (gameWon) return;
+        if (selected === -1) {
+            homeScene.sound.play('up', { volume: 0.6 });
+            selected = activeBlock;
+            hoverBlock(selected);
+        } else {
+            homeScene.sound.play('down', { volume: 0.6 });
+            unhoverBlock(selected);
+            selected = -1;
+        }
+    });
+
+    keyE.on('down', function() {
         if (gameWon) return;
         if (selected === -1) {
             homeScene.sound.play('up', { volume: 0.6 });
