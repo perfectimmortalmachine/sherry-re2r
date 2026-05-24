@@ -154,6 +154,14 @@ homeScene.create = function() {
         strokeThickness: 8,
     }).setOrigin(0.5).setVisible(false).setDepth(10);
 
+    const instructions3 = this.add.text(W / 7, 620, 'Press "P" to clear PB', {
+        fontFamily: 'Cascadia Code, serif',
+        fontSize: '26px',
+        fill: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 8,
+    }).setOrigin(0.5).setVisible(false).setDepth(10);
+
     const keys   = ['b0', 'b1', 'b2', 'b3'];
     const blockW = 300;
     const gap    = -40;
@@ -513,6 +521,7 @@ homeScene.create = function() {
         byPalm.setVisible(true);
         instructions.setVisible(true);
         instructions2.setVisible(true);
+        instructions3.setVisible(true);
         images.forEach(({ img }) => img.setVisible(true));
         dot.setVisible(true);
         timerText.setVisible(true);
