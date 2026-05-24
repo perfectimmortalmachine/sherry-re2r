@@ -43,7 +43,7 @@ startScene.create = function() {
 
 this.add.text(W / 2, H / 2 - 300,
     'Note: the game starts from the point AFTER\n' +
-    'inserting the bear block and shifting,\n' +
+    'inserting the bear block and shifting\n' +
     'the first block to slot 3 (array_index[2])', {
     fontFamily: 'Cascadia Code, serif',
     fontSize: '18px',
