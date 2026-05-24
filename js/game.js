@@ -27,23 +27,31 @@ homeScene.create = function() {
         strokeThickness: 8,
     }).setOrigin(0.5);
 
-    const keys = ['b0', 'b1', 'b2', 'b3'];
-    const blockW = 200;
-    const gap    = 20;
+    // Layout
+    const keys   = ['b0', 'b1', 'b2', 'b3'];
+    const blockW = 220;
+    const gap    = -40;
     const totalW = blockW * 4 + gap * 3;
     const startX = (W - totalW) / 2;
-    const blockY = 160;
+    const blockY = 241;
+
+    const offsets = [
+        { x: 18, y: -3 },  // block 0
+        { x: 8, y: -8 },  // block 1
+        { x: -35, y: -1.5 },  // block 2
+        { x: -36, y: -2 },  // block 3
+    ];
 
     keys.forEach((key, i) => {
-        const src      = this.textures.get(key).getSourceImage();
-        const rotH     = src.height / 4;
-        const scale    = blockW / src.width;
-        const displayH = Math.round(rotH * scale);
+        const src  = this.textures.get(key).getSourceImage();
+        const rotH = src.height / 4;
+        const scale = blockW / src.width;
+        const cropH = i === 0 ? rotH - 18 : rotH;
 
-        this.add.image(startX + i * (blockW + gap), blockY, key)
+        this.add.image(startX + i * (blockW + gap) + offsets[i].x, blockY + offsets[i].y, key)
             .setOrigin(0, 0)
             .setScale(scale)
-            .setCrop(0, 0, src.width, rotH);
+            .setCrop(0, 0, src.width, cropH - 15);
     });
 };
 
