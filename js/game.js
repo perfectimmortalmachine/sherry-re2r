@@ -515,18 +515,20 @@ homeScene.create = function() {
 
     keyA.on('down', function() {
         if (gameWon || selected !== -1) return;
+        if (activeBlock === 0) return; 
         const rot = rotations[activeBlock];
         images[activeBlock].img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
-        activeBlock = (activeBlock - 1 + 4) % 4;
+        activeBlock = activeBlock - 1;
         glowT = 0;
         updateIndicator();
     });
 
     keyD.on('down', function() {
         if (gameWon || selected !== -1) return;
+        if (activeBlock === 3) return;
         const rot = rotations[activeBlock];
         images[activeBlock].img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
-        activeBlock = (activeBlock + 1) % 4;
+        activeBlock = activeBlock + 1;
         glowT = 0;
         updateIndicator();
     });
