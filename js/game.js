@@ -23,7 +23,6 @@ startScene.create = function() {
     const scaleY  = H / menubkg.height;
     menubkg.setScale(Math.max(scaleX, scaleY));
 
-    // Main Text
     this.add.text(W / 2, H / 2 - 80, 'Resident Evil 2', {
         fontFamily: 'Cascadia Code, serif',
         fontSize: '48px',
@@ -32,7 +31,6 @@ startScene.create = function() {
         strokeThickness: 10,
     }).setOrigin(0.5);
 
-    // Main Text
     this.add.text(W / 2, H / 2 - 20, 'Sherry Block Puzzle', {
         fontFamily: 'Cascadia Code, serif',
         fontSize: '36px',
@@ -53,7 +51,6 @@ startScene.create = function() {
         align: 'center',
     }).setOrigin(0.5);
 
-    // Palm
     this.add.text(W / 2, H / 2 + 30, 'by Palm', {
         fontFamily: 'Cascadia Code, serif',
         fontSize: '18px',
@@ -169,6 +166,9 @@ homeScene.create = function() {
     const blockY = 220;
     const hoverOffset = -200;
 
+    const TINT_SOLVED = 0xe8e8e8;
+    const TINT_UNSOLVED = 0xc7c7c7;
+
     // U->D B0->B3
     const offsets = [
         [ { x: 61,  y: 8   }, { x: 61,  y: 8   }, { x: 61,  y: 8   }, { x: 61,  y: 2   } ],
@@ -224,7 +224,8 @@ homeScene.create = function() {
             .setScale(scale)
             .setCrop(0, cropY, src.width, cropH)
             .setVisible(false)
-            .setDepth(10);
+            .setDepth(10)
+            .setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
 
         images.push({ img, src, rotH, scale });
     });
@@ -396,10 +397,11 @@ homeScene.create = function() {
         homeScene.tweens.killTweensOf(img);
 
         const { src, rotH } = images[i];
-        const rot  = rotations[i];
+        const rot   = rotations[i];
         const cropY = rot * rotH + topCrop[i][rot];
         const cropH = getCropH(i, rot);
         img.setCrop(0, cropY, src.width, cropH);
+        img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
 
         images.forEach(entry => homeScene.children.bringToTop(entry.img));
         homeScene.children.bringToTop(dot);
@@ -430,8 +432,8 @@ homeScene.create = function() {
         const slideAmt = cropH * scale;
 
         homeScene.tweens.killTweensOf(img);
-
         img.setCrop(0, cropY, src.width, cropH);
+        img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
 
         const fromY = direction > 0
             ? targetY + slideAmt
