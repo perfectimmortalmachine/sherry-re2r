@@ -41,17 +41,17 @@ startScene.create = function() {
         strokeThickness: 8,
     }).setOrigin(0.5);
 
-this.add.text(W / 2, H / 2 - 300,
-    'Note: the game starts from the point AFTER\n' +
-    'inserting the bear block and shifting\n' +
-    'the first block to slot 3 (array_index[2])', {
-    fontFamily: 'Cascadia Code, serif',
-    fontSize: '18px',
-    fill: '#d8d9cb',
-    stroke: '#000000',
-    strokeThickness: 8,
-    align: 'center',
-}).setOrigin(0.5);
+    this.add.text(W / 2, H / 2 - 300,
+        'Note: the game starts from the point AFTER\n' +
+        'inserting the doll block and shifting\n' +
+        'the first block to slot 3 (array_index[2])', {
+        fontFamily: 'Cascadia Code, serif',
+        fontSize: '18px',
+        fill: '#d8d9cb',
+        stroke: '#000000',
+        strokeThickness: 8,
+        align: 'center',
+    }).setOrigin(0.5);
 
     // Palm
     this.add.text(W / 2, H / 2 + 30, 'by Palm', {
@@ -60,7 +60,6 @@ this.add.text(W / 2, H / 2 - 300,
         fill: '#e4dddd',
     }).setOrigin(0.5);
 
-    // Palm
     this.add.text(W / 2, H / 2 + 50, 'speedrun.com/palm', {
         fontFamily: 'Cascadia Code, serif',
         fontSize: '18px',
@@ -230,7 +229,7 @@ homeScene.create = function() {
         images.push({ img, src, rotH, scale });
     });
 
-    let activeBlock  = 0;
+    let activeBlock  = 2;
     let selected     = -1;
     let animating    = false;
     let gameWon      = false;
@@ -265,7 +264,7 @@ homeScene.create = function() {
         },
     });
 
-    const dot = this.add.circle(blockCentres[0], H - 300, 6, 0xffdd00)
+    const dot = this.add.circle(blockCentres[2], H - 300, 6, 0xffdd00)
         .setVisible(false).setDepth(10);
 
     const overlay   = this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0).setDepth(50);
@@ -376,6 +375,8 @@ homeScene.create = function() {
 
     function hoverBlock(i) {
         const { img, scale } = images[i];
+        animating = false;
+        homeScene.tweens.killTweensOf(img);
         homeScene.children.bringToTop(img);
         homeScene.children.bringToTop(dot);
         homeScene.tweens.add({
@@ -384,13 +385,22 @@ homeScene.create = function() {
             x:        getBaseX(i) - 10,
             scaleX:   scale * 1.06,
             scaleY:   scale * 1.06,
-            duration: 180,
+            duration: 200,
             ease:     'Cubic.Out',
         });
     }
 
     function unhoverBlock(i) {
         const { img, scale } = images[i];
+        animating = false;
+        homeScene.tweens.killTweensOf(img);
+
+        const { src, rotH } = images[i];
+        const rot  = rotations[i];
+        const cropY = rot * rotH + topCrop[i][rot];
+        const cropH = getCropH(i, rot);
+        img.setCrop(0, cropY, src.width, cropH);
+
         images.forEach(entry => homeScene.children.bringToTop(entry.img));
         homeScene.children.bringToTop(dot);
         homeScene.tweens.add({
@@ -399,7 +409,7 @@ homeScene.create = function() {
             x:        getBaseX(i),
             scaleX:   scale,
             scaleY:   scale,
-            duration: 180,
+            duration: 200,
             ease:     'Cubic.Out',
             onComplete: () => {
                 checkWin.call(homeScene);
@@ -419,6 +429,8 @@ homeScene.create = function() {
         const targetX  = getBaseX(i) - 10;
         const slideAmt = cropH * scale;
 
+        homeScene.tweens.killTweensOf(img);
+
         img.setCrop(0, cropY, src.width, cropH);
 
         const fromY = direction > 0
@@ -431,7 +443,7 @@ homeScene.create = function() {
         homeScene.tweens.add({
             targets:  img,
             y:        targetY,
-            duration: 100,
+            duration: 110,
             ease:     'Cubic.Out',
             onComplete: () => { animating = false; },
         });
