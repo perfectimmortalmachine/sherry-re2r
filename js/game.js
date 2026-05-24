@@ -166,7 +166,7 @@ homeScene.create = function() {
     const blockY = 220;
     const hoverOffset = -200;
 
-    const TINT_SOLVED = 0xe8e8e8;
+    const TINT_SOLVED   = 0xe8e8e8;
     const TINT_UNSOLVED = 0xc7c7c7;
 
     // U->D B0->B3
@@ -234,6 +234,24 @@ homeScene.create = function() {
     let selected     = -1;
     let animating    = false;
     let gameWon      = false;
+    let glowTween    = null;
+    let glowT        = 0;
+
+    this.time.addEvent({
+        delay: 16, loop: true,
+        callback: () => {
+            if (gameWon || selected !== -1) return;
+            glowT += 0.05
+            ;
+            const t   = (Math.sin(glowT) + 1) / 2;   
+            const rot = rotations[activeBlock];
+            const base = rot === 0 ? 0xe8 : 0xc7;
+            const hi   = 0xff;
+            const v    = Math.round(base + (hi - base) * t * 0.95);
+            const hex  = (v << 16) | (v << 8) | v;
+            images[activeBlock].img.setTint(hex);
+        },
+    });
 
     let elapsedMs    = 0;
     let timerRunning = false;
@@ -264,9 +282,6 @@ homeScene.create = function() {
             timerText.setText((elapsedMs / 1000).toFixed(3));
         },
     });
-
-    const dot = this.add.circle(blockCentres[2], H - 300, 6, 0xffdd00)
-        .setVisible(false).setDepth(10);
 
     const overlay   = this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0).setDepth(50);
     const winBox    = this.add.rectangle(W / 2, 80, 700, 100, 0x0e120e).setDepth(51).setVisible(false);
@@ -371,7 +386,9 @@ homeScene.create = function() {
     }
 
     function updateIndicator() {
-        dot.setX(blockCentres[activeBlock]);
+        const rot = rotations[activeBlock];
+        images[activeBlock].img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
+        glowT = 0;
     }
 
     function hoverBlock(i) {
@@ -379,7 +396,6 @@ homeScene.create = function() {
         animating = false;
         homeScene.tweens.killTweensOf(img);
         homeScene.children.bringToTop(img);
-        homeScene.children.bringToTop(dot);
         homeScene.tweens.add({
             targets:  img,
             y:        getBaseY(i) + hoverOffset,
@@ -404,7 +420,6 @@ homeScene.create = function() {
         img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
 
         images.forEach(entry => homeScene.children.bringToTop(entry.img));
-        homeScene.children.bringToTop(dot);
         homeScene.tweens.add({
             targets:  img,
             y:        getBaseY(i),
@@ -500,13 +515,19 @@ homeScene.create = function() {
 
     keyA.on('down', function() {
         if (gameWon || selected !== -1) return;
+        const rot = rotations[activeBlock];
+        images[activeBlock].img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
         activeBlock = (activeBlock - 1 + 4) % 4;
+        glowT = 0;
         updateIndicator();
     });
 
     keyD.on('down', function() {
         if (gameWon || selected !== -1) return;
+        const rot = rotations[activeBlock];
+        images[activeBlock].img.setTint(rot === 0 ? TINT_SOLVED : TINT_UNSOLVED);
         activeBlock = (activeBlock + 1) % 4;
+        glowT = 0;
         updateIndicator();
     });
 
@@ -537,7 +558,6 @@ homeScene.create = function() {
         instructions2.setVisible(true);
         instructions3.setVisible(true);
         images.forEach(({ img }) => img.setVisible(true));
-        dot.setVisible(true);
         timerText.setVisible(true);
         pbText.setVisible(true);
         this.cameras.main.fadeIn(600, 0, 0, 0);
