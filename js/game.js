@@ -463,7 +463,7 @@ homeScene.create = function() {
             duration: 110,
             ease:     'Cubic.Out',
             onComplete: () => { animating = false; },
-        });
+        }); 
     }
 
     const keyW = this.input.keyboard.addKey('W');
@@ -473,7 +473,7 @@ homeScene.create = function() {
     const keyF = this.input.keyboard.addKey('F');
     const keyE = this.input.keyboard.addKey('E');
 
-    //Thanks Joydurn aa
+    //Thanks Joydurn aa (LMB)
     this.input.on('pointerdown', function(pointer) {
         keyF.emit('down', pointer);
     }, this);
