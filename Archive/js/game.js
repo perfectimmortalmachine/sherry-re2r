@@ -473,11 +473,6 @@ homeScene.create = function() {
     const keyF = this.input.keyboard.addKey('F');
     const keyE = this.input.keyboard.addKey('E');
 
-    //Thanks Joydurn aa
-    this.input.on('pointerdown', function(pointer) {
-        keyF.emit('down', pointer);
-    }, this);
-
     keyF.on('down', function() {
         if (gameWon) return;
         if (selected === -1) {
